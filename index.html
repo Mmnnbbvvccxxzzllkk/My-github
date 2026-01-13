@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>পুরুষ ছাত্রাবাস</title>
+<style>
+  body {font-family: Arial, sans-serif; margin:0; background:#f0f0f5; color:#1a1a2e;}
+  header {background: linear-gradient(135deg,#1a1a2e,#162447); color:#fff; padding:50px 20px; text-align:center;}
+  header h1 {font-size:3em; margin-bottom:10px;}
+  header p {font-size:1.5em; margin:5px 0;}
+  section {max-width:1400px; margin:30px auto; padding:0 20px;}
+  h2 {text-align:center; margin-bottom:30px;}
+  table {width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+  th, td {padding:12px; text-align:center; border-bottom:1px solid #ddd;}
+  th {background: linear-gradient(90deg,#1a1a2e,#162447); color:#fff;}
+  tr:hover {background:#f9f9f9;}
+  .edit-btn {padding:5px 10px; border:none; border-radius:5px; background:#e43f5a; color:#fff; cursor:pointer;}
+  .edit-btn:hover {background:#ff6b81;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>হোয়াইট হাউস ছাত্রাবাস তৃতীয় তলা  </h1>
+  <p>
+  ম্যানেজার: 
+  <strong id="managerName">মোঃওয়ালিদ</strong>
+  <button class="edit-btn" onclick="editManager()">এডিট</button>
+</p>
+  <p>মাসিক খাবারের হিসাব ও লেনদেন</p>
+</header>
+
+<section>
+  <h2>রুম হিসাব (মাসিক)</h2>
+  <table id="roomTable">
+    <thead>
+      <tr>
+        <th>রুম নাম্বার</th>
+        <th>কারা আছে?</th>
+        <th>মাসিক খাবার এর খরচ টাকা </th>
+        <th>দেওয়া হয়েছে টাকা</th>
+        <th>ম্যানেজারের পাওনা টাকা</th>
+        <th>ম্যানেজারের দেওয়া টাকা</th>
+        <th>এডিট</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JS দিয়ে ডাইনামিক লিস্ট -->
+    </tbody>
+  </table>
+</section>
+
+<script>
+// হোস্টেল ম্যানেজারের নাম
+let managerName = "মোঃ ওয়ালিদ "; 
+document.getElementById("managerName").innerText = managerName;
+
+// ১৫ রুমের ডাটা
+const rooms = [
+  {number:'1', occupants:['রহিম','জাহিদ'], cost:2500, paid:3000, managerGet:1500, managerGive:2000},
+  {number:'2', occupants:['সালাম'], cost:2500, paid:3900, managerGet:0, managerGive:3900},
+  {number:'3', occupants:[], cost:2500, paid:2500, managerGet:0, managerGive:0},
+  {number:'4', occupants:['নাহিদ','মোস্তাফা'], cost:2500, paid:4800, managerGet:0, managerGive:4800},
+  {number:'5', occupants:['ফাহিম'], cost:2500, paid:3000, managerGet:1200, managerGive:2000},
+  {number:'6', occupants:['রকিব'], cost:2500, paid:0, managerGet:0, managerGive:0},
+  {number:'7', occupants:['জাভেদ','আতিক'], cost:2500, paid:4500, managerGet:0, managerGive:4500},
+  {number:'8', occupants:['সুমন'], cost:2500, paid:4200, managerGet:0, managerGive:4200},
+  {number:'9', occupants:['মিঠু','রনি'], cost:2500, paid:3000, managerGet:1650, managerGive:3000},
+  {number:'10', occupants:[], cost:2500, paid:0, managerGet:0, managerGive:0},
+  {number:'11', occupants:['আকাশ'], cost:2500, paid:3900, managerGet:0, managerGive:3900},
+  {number:'12', occupants:['সোহেল','মিঠুন'], cost:2500, paid:4500, managerGet:300, managerGive:4500},
+  {number:'13', occupants:[], cost:2500, paid:0, managerGet:0, managerGive:0},
+  {number:'14', occupants:['রফিক'], cost:2500, paid:3000, managerGet:1350, managerGive:3000},
+  {number:'15', occupants:['মোস্তাফা'], cost:2500, paid:4500, managerGet:0, managerGive:4500},
+];
+
+// টেবিল রেন্ডার ফাংশন
+function renderTable() {
+  const tbody = document.querySelector('#roomTable tbody');
+  tbody.innerHTML = '';
+  rooms.forEach((room,index)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td>${room.number}</td>
+      <td>${room.occupants.length>0?room.occupants.join(', '):'খালি'}</td>
+      <td>${room.cost}</td>
+      <td>${room.paid}</td>
+      <td>${room.managerGet}</td>
+      <td>${room.managerGive}</td>
+      <td><button class="edit-btn" onclick="editRoom(${index})">এডিট</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// এডিট ফাংশন
+function editRoom(index){
+  const newOccupants = prompt("নতুন নাম (কমা দিয়ে):", rooms[index].occupants.join(', '));
+  if(newOccupants!==null) rooms[index].occupants = newOccupants.split(',').map(n=>n.trim());
+
+  const newCost = prompt("মাসিক খাবারের খরচ", rooms[index].cost);
+  if(newCost!==null && !isNaN(newCost)) rooms[index].cost = Number(newCost);
+
+  const newPaid = prompt("দেওয়া টাকা:", rooms[index].paid);
+  if(newPaid!==null && !isNaN(newPaid)) rooms[index].paid = Number(newPaid);
+
+  const newManagerGet = prompt("ম্যানেজারের পাওনা টাকা:", rooms[index].managerGet);
+  if(newManagerGet!==null && !isNaN(newManagerGet)) rooms[index].managerGet = Number(newManagerGet);
+
+  const newManagerGive = prompt("ম্যানেজারের দেওয়া টাকা:", rooms[index].managerGive);
+  if(newManagerGive!==null && !isNaN(newManagerGive)) rooms[index].managerGive = Number(newManagerGive);
+
+  renderTable();
+}
+
+renderTable();
+</script>
+
+</body>
+</html>
